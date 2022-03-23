@@ -1,6 +1,7 @@
 import praw
 from dotenv import load_dotenv
 from os import getenv as env
+from time import sleep
 
 load_dotenv()
 
@@ -55,6 +56,7 @@ class string_manipulation:
 
 def main():
     while True:
+        sleep(10)
         for c in reddit.inbox.mentions(limit=None):
 
             if c.new:
