@@ -57,28 +57,31 @@ class string_manipulation:
 def main():
     while True:
         sleep(10)
-        for c in reddit.inbox.mentions(limit=None):
+        try:
+            for c in reddit.inbox.mentions(limit=None):
 
-            if c.new:
-                cp = c.parent()
-                if "--ussynr" not in cp.body and cp.author != "ussybot":
-                    ussy = string_manipulation.add_ussy(cp.body)
-                    reply = None
-                    if c.author != cp.author:
-                        reply = f"{ussy}\n\n^Comment ^from u/{cp.author}, ^requested ^by u/{c.author}"
+                if c.new:
+                    cp = c.parent()
+                    if "--ussynr" not in cp.body and cp.author != "ussybot":
+                        ussy = string_manipulation.add_ussy(cp.body)
+                        reply = None
+                        if c.author != cp.author:
+                            reply = f"{ussy}\n\n^Comment ^from u/{cp.author}, ^requested ^by u/{c.author}"
+                        else:
+                            reply = f"{ussy}\n\n^Requested ^by u/{c.author}"
+                        if reply is not None:
+                            c.reply(reply)
+                            with open("log.txt", "a") as f:
+                                f.write(f"{c.id}\n")
+                                f.close()
+                        c.mark_read()
                     else:
-                        reply = f"{ussy}\n\n^Requested ^by u/{c.author}"
-                    if reply is not None:
-                        c.reply(reply)
-                        with open("log.txt", "a") as f:
+                        with open("ignored.txt", "a") as f:
                             f.write(f"{c.id}\n")
                             f.close()
-                    c.mark_read()
-                else:
-                    with open("ignored.txt", "a") as f:
-                        f.write(f"{c.id}\n")
-                        f.close()
-                    c.mark_read()
+                        c.mark_read()
+        except:
+            continue
 
 
 if __name__ == "__main__":
